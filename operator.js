@@ -1,1 +1,0 @@
-console.log("hello - operator.js:1")
