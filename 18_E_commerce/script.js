@@ -76,7 +76,7 @@ function showProduct() {
                   <h5 class="card-title">${p.name}</h5>
                  <p class="card-text">${p.price}</p>
 
-                 <button class="btn btn-primary">Add to Cart</button>
+                 <button class="btn btn-primary"  onclick = "addToCart(${p.id})"  >Add to Cart</button>
                     </div>
                 </div>
         
@@ -86,3 +86,120 @@ function showProduct() {
 }
 
 showProduct();
+
+function addToCart(id) {
+  try {
+    let productItem = localCartItem.find((p) => p.id === id);
+
+    console.log("already product - script.js:94", productItem);
+
+    if (productItem) {
+      productItem.qty++;
+    } else {
+      productItem = products.find((p) => p.id === id);
+
+      localCartItem.push({ ...productItem, qty: 1 });
+    }
+
+    updateLocalStorage();
+    alert("item added successfully");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function updateLocalStorage() {
+  localStorage.setItem("cart", JSON.stringify(localCartItem));
+}
+
+function showCartItem() {
+  const cartModal = document.getElementById("cartModal");
+  const modal = new bootstrap.Modal(cartModal);
+
+  modal.show();
+  showCartData();
+  grandTotal();
+}
+
+function showCartData() {
+  const tableBody = document.getElementById("table-body");
+  tableBody.innerHTML = "";
+
+  localCartItem.forEach((p, index) => {
+    tableBody.innerHTML += `
+        <tr>
+        <td>${index + 1}</td>
+        <td><img src=${p.img} class="cartProductImg" alt=${p.name}></img></td>
+        <td>${p.name}</td>
+        <td>₹${p.price}</td>
+        
+    <td>
+    <div class="d-flex justify-content-center align-items-center gap-3" >
+     <button class= "btn btn-outline-success" onclick="increaseQty(${p.id})">+</button>
+     <h5>${p.qty}</h5>
+     <button class= "btn btn-outline-warning" onclick="decreaseQty(${p.id})">-</button>
+    </div>
+    </td>
+    <td>₹${p.qty * p.price}</td>
+    <td><button class= "btn btn-outline-danger" onclick="removeProduct(${p.id})">Remove</button></td>
+     </tr>`;
+  });
+}
+
+function increaseQty(id) {
+  try {
+    const product = localCartItem.find((p) => p.id === id);
+
+    if (product) {
+      product.qty++;
+    }
+
+    updateLocalStorage();
+    showCartData();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function decreaseQty(id) {
+  try {
+    const index = localCartItem.findIndex((p) => p.id === id);
+    if (index === -1) {
+      throw new Error("product not found");
+    }
+    const product = localCartItem.find((p) => p.id === id);
+
+    if (product) {
+      product.qty--;
+    }
+
+    if (product.qty === 0) {
+      localCartItem.splice(index, 1);
+    }
+
+    updateLocalStorage();
+    showCartData();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function removeProduct(id) {
+  const index = localCartItem.findIndex((p) => p.id === id);
+
+  localCartItem.splice(index, 1);
+
+  updateLocalStorage();
+  showCartData();
+}
+
+function grandTotal() {
+  const total = document.getElementById("GrandTotal");
+  total.innerHTML = "";
+
+  const totalAmounts = localCartItem.reduce((acc, curr) => {
+    return (acc += curr.price * curr.qty);
+  }, 0);
+
+  total.innerHTML = `Grand Total<h5>₹${totalAmounts}</h5>`;
+}

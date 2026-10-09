@@ -1,22 +1,23 @@
+```html
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ShopNova</title>
+
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
     />
-
     <link rel="stylesheet" href="./style.css" />
   </head>
+
   <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">ShopNova</a>
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="#">ShopNova</a>
+
         <button
           class="navbar-toggler"
           type="button"
@@ -28,21 +29,33 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav m-auto mb-2 mb-lg-0">
+          <ul class="navbar-nav m-auto">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
+              <a class="nav-link active" href="#">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
+              <a
+                class="nav-link"
+                href="#"
+                onclick="
+                  showCartItem();
+                  return false;
+                "
+              >
+                Cart (<span id="cartCount">0</span>)
+              </a>
             </li>
           </ul>
-          <form class="d-flex" role="search">
+
+          <form class="d-flex" id="searchForm" role="search">
             <input
               class="form-control me-2"
+              id="searchInput"
               type="search"
-              placeholder="Search"
-              aria-label="Search"
+              placeholder="Search products"
+              aria-label="Search products"
             />
             <button class="btn btn-outline-success" type="submit">
               Search
@@ -52,18 +65,66 @@
       </div>
     </nav>
 
-    <main>
-        <div class="container">
-
-            <div class="row" id="product"></div>
-        </div>
+    <main class="container py-4">
+      <h2 class="text-center mb-4">Our Products</h2>
+      <div class="row" id="product"></div>
     </main>
 
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+      <div
+        class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Your Cart</h4>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table
+                class="table table-striped table-hover table-bordered align-middle"
+              >
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <h5 class="me-auto" id="GrandTotal">Grand Total: ₹0</h5>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" onclick="checkOut()">
+              Check Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./script.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-      crossorigin="anonymous"
-    ></script>
   </body>
 </html>
+```

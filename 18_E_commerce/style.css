@@ -9,3 +9,7 @@
   height: 220px;
   object-fit: cover;
 }
+
+.navbar-brand{
+  margin-left: 15vh;
+}
