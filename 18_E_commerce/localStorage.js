@@ -1,16 +1,16 @@
-const data={
-    id:"xyz",
-    password:"124"
-}
+const data = {
+  id: "xyz",
+  password: "01234",
+};
 
 // setItem
 
-localStorage.setItem("data",JSON.stringify(data))
+localStorage.setItem("data", JSON.stringify(data));
 
-//getitem
+// getItem
 
-const userData = JSON.parse(localStorage.getItem("data"))
+const userData = JSON.parse(localStorage.getItem("data"));
 
-console.log(userData)
+console.log(userData);
 
-document.getElementById("localStorage").innerHTML=userData.password;
+document.getElementById("localStorage").innerHTML = userData.password;

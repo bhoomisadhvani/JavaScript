@@ -61,6 +61,8 @@ const products = [
   },
 ];
 
+let localCartItem = JSON.parse(localStorage.getItem("cart")) || [];
+
 function showProduct() {
   const product = document.getElementById("product");
 
@@ -77,6 +79,9 @@ function showProduct() {
                  <p class="card-text">${p.price}</p>
 
                  <button class="btn btn-primary"  onclick = "addToCart(${p.id})"  >Add to Cart</button>
+                 <button class="btn btn-warning text-white" onclick = "updateProduct(${p.id})" >update Cart</button>
+                 <button class="btn btn-danger" onclick = " deleteToCart(${p.id})" >delete</button>
+
                     </div>
                 </div>
         
@@ -91,7 +96,7 @@ function addToCart(id) {
   try {
     let productItem = localCartItem.find((p) => p.id === id);
 
-    console.log("already product - script.js:94", productItem);
+    console.log("already product - script.js:99", productItem);
 
     if (productItem) {
       productItem.qty++;
@@ -102,6 +107,7 @@ function addToCart(id) {
     }
 
     updateLocalStorage();
+    grandTotal();
     alert("item added successfully");
   } catch (error) {
     console.log(error);
@@ -129,7 +135,7 @@ function showCartData() {
     tableBody.innerHTML += `
         <tr>
         <td>${index + 1}</td>
-        <td><img src=${p.img} class="cartProductImg" alt=${p.name}></img></td>
+        <td><img src=${p.img} class="cartProductImg"  alt=${p.name}></img></td>
         <td>${p.name}</td>
         <td>₹${p.price}</td>
         
@@ -156,6 +162,7 @@ function increaseQty(id) {
 
     updateLocalStorage();
     showCartData();
+    grandTotal();
   } catch (error) {
     console.log(error);
   }
@@ -179,6 +186,7 @@ function decreaseQty(id) {
 
     updateLocalStorage();
     showCartData();
+    grandTotal();
   } catch (error) {
     console.log(error);
   }
@@ -191,6 +199,7 @@ function removeProduct(id) {
 
   updateLocalStorage();
   showCartData();
+  grandTotal();
 }
 
 function grandTotal() {
@@ -202,4 +211,145 @@ function grandTotal() {
   }, 0);
 
   total.innerHTML = `Grand Total<h5>₹${totalAmounts}</h5>`;
+}
+
+function checkOut() {
+  try {
+    if (localCartItem.length === 0) {
+      return alert("Your cart is empty. Please add some products.");
+    }
+
+    alert("Your order placed successfully!");
+
+    localCartItem = [];
+    updateLocalStorage();
+
+    showCartData();
+    grandTotal();
+
+    const cartModal = document.getElementById("cartModal");
+    const modal = bootstrap.Modal.getInstance(cartModal);
+
+    if (modal) {
+      modal.hide();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function addProductModalShow() {
+  const addProductModal = document.getElementById("addProductModal");
+
+  const modal = new bootstrap.Modal(addProductModal);
+
+  modal.show();
+}
+
+function addProduct() {
+  const productName = document.getElementById("productName").value.trim();
+  const ProductPrice = document.getElementById("ProductPrice").value.trim();
+  const ProductImage = document.getElementById("ProductImage").value.trim();
+
+  if (!productName || !ProductPrice || !ProductImage) {
+    alert("product details are required");
+  } else {
+    const newProduct = {
+      id: new Date().getTime(),
+      name: productName,
+      price: ProductPrice,
+      img: ProductImage,
+    };
+
+    console.log("new - script.js:264", newProduct);
+    products.push(newProduct);
+
+    updateLocalStorage();
+
+    console.log("products - script.js:269", products);
+
+    alert("new product added successfully");
+  }
+
+  showProduct();
+}
+
+function deleteToCart(id) {
+  const index = products.findIndex((p) => p.id === id);
+
+  if (index === -1) {
+    alert("Product not found");
+    return;
+  }
+
+  products.splice(index, 1);
+
+  // Agar product cart mein bhi hai toh wahan se remove karo
+  localCartItem = localCartItem.filter((p) => p.id !== id);
+
+  updateLocalStorage();
+  showProduct();
+  showCartData();
+  grandTotal();
+
+  alert("Product deleted successfully");
+}
+
+let editProductId = null;
+
+function updateProduct(id) {
+  editProductId = id;
+
+  const product = products.find((p) => p.id === id);
+
+  if (!product) {
+    alert("Product not found");
+    return;
+  }
+
+  document.getElementById("updateProductName").value = product.name;
+  document.getElementById("updateProductPrice").value = product.price;
+  document.getElementById("updateProductImage").value = product.img;
+
+  const modalElement = document.getElementById("updateProductModal");
+  bootstrap.Modal.getOrCreateInstance(modalElement).show();
+}
+
+function saveUpdatedProduct(event) {
+  event.preventDefault();
+
+  const product = products.find((p) => p.id === editProductId);
+
+  if (!product) {
+    alert("Product not found");
+    return;
+  }
+
+  const name = document.getElementById("updateProductName").value.trim();
+  const price = Number(document.getElementById("updateProductPrice").value);
+  const img = document.getElementById("updateProductImage").value.trim();
+
+  if (!name || !img || !Number.isFinite(price) || price <= 0) {
+    alert("Please enter valid product details");
+    return;
+  }
+
+  product.name = name;
+  product.price = price;
+  product.img = img;
+
+  localCartItem = localCartItem.map((p) =>
+    p.id === editProductId ? { ...p, name, price, img } : p,
+  );
+
+  updateLocalStorage();
+  showProduct();
+  showCartData();
+  grandTotal();
+
+  bootstrap.Modal.getOrCreateInstance(
+    document.getElementById("updateProductModal"),
+  ).hide();
+
+  alert("Product updated successfully");
 }
