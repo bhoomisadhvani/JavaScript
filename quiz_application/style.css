@@ -1,0 +1,31 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(
+    180deg,
+    #989ecb 0%,
+    #8ca4c6 16.667%,
+    #92a9be 33.333%,
+    #a7acb4 50%,
+    #c4afa8 66.667%,
+    #dfaf9d 83.333%,
+    #eeae93 100%
+  );
+}
+
+#que {
+  font-size: 22px;
+}
+
+
+.quiz-card {
+  min-height: 300px;
+  width: 350px;
+  max-width: 100%;
+  border-radius: 20px;
+}
+
